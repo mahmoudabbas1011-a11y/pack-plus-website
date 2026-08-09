@@ -1,22 +1,6 @@
-# Use DecapBridge PKCE auth (required)
 backend:
   name: git-gateway
-  repo: mahmoudabbas1011-a11y/pack-plus-website
   branch: main
-  auth_type: pkce
-  base_url: https://auth.decapbridge.com
-  auth_endpoint: /sites/77560e05-8936-47a0-85e4-562df6b662fa/pkce
-  auth_token_endpoint: /sites/77560e05-8936-47a0-85e4-562df6b662fa/token
-  gateway_url: https://gateway.decapbridge.com
-
-auth:
-  email_claim: email
-  first_name_claim: first_name
-  last_name_claim: last_name
-  avatar_url_claim: avatar_url
-
-logo_url: https://decapbridge.com/decapcms-with-bridge.svg
-site_url: https://heroic-blini-b69b61.netlify.app
 
 media_folder: "images"
 public_folder: "images"
@@ -54,3 +38,14 @@ collections:
               - label: "المقاس"
                 name: "size"
                 widget: "string"
+              - label: "سعر الكرتونة (جنيه)"
+                name: "price"
+                widget: "number"
+                required: false
+                value_type: "float"
+                hint: "السعر ده مش هيظهر للعميل وهو بيتصفح — بيظهر بس جوه سلة الطلب"
+              - label: "كمية الكرتونة"
+                name: "carton_qty"
+                widget: "string"
+                required: false
+                hint: "مثال: 500 قطعة"

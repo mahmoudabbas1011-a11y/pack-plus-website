@@ -38,14 +38,3 @@ collections:
               - label: "المقاس"
                 name: "size"
                 widget: "string"
-              - label: "سعر الكرتونة (جنيه)"
-                name: "price"
-                widget: "number"
-                required: false
-                value_type: "float"
-                hint: "السعر ده مش هيظهر للعميل وهو بيتصفح — بيظهر بس جوه سلة الطلب"
-              - label: "كمية الكرتونة"
-                name: "carton_qty"
-                widget: "string"
-                required: false
-                hint: "مثال: 500 قطعة"

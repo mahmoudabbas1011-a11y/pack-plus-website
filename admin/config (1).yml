@@ -1,0 +1,40 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "images"
+
+locale: "ar"
+
+collections:
+  - name: "products"
+    label: "المنتجات"
+    files:
+      - name: "products_list"
+        label: "كل المنتجات"
+        file: "data/products.json"
+        fields:
+          - label: "المنتجات"
+            name: "products"
+            widget: "list"
+            label_singular: "منتج"
+            summary: "{{fields.name}} ({{fields.category}})"
+            fields:
+              - label: "الفئة"
+                name: "category"
+                widget: "select"
+                options:
+                  - { label: "علب بلاستيك ووجبات", value: "containers" }
+                  - { label: "أطباق وأدوات الفويل", value: "foil" }
+                  - { label: "أكواب وأطباق ورقية", value: "cups" }
+                  - { label: "أدوات مائدة وإكسسوارات", value: "cutlery" }
+              - label: "صورة المنتج"
+                name: "image"
+                widget: "image"
+              - label: "اسم المنتج"
+                name: "name"
+                widget: "string"
+              - label: "المقاس"
+                name: "size"
+                widget: "string"

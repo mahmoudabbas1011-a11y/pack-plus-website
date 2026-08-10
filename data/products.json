@@ -58,14 +58,6 @@
     },
     {
       "category": "containers",
-      "image": "images/black-2comp-domelid.jpg",
-      "name": "علبة بلاستيك أسود مقسمة قسمين بغطاء قبة عالي",
-      "size": "[المقاس]",
-      "price": 0,
-      "carton_qty": ""
-    },
-    {
-      "category": "containers",
       "image": "images/small-square-clear.jpg",
       "name": "علبة صوصات مفصلة",
       "size": "10 oz",

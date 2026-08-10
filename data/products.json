@@ -95,6 +95,12 @@
       "size": "[المقاس]",
       "price": 0,
       "carton_qty": ""
+    },
+    {
+      "category": "cups",
+      "image": "images/109086.jpg",
+      "name": "كوب بلاستيك شفاف ",
+      "size": "16اونز"
     }
   ]
 }

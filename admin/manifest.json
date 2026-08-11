@@ -1,0 +1,25 @@
+{
+  "name": "Pack Plus - لوحة التحكم",
+  "short_name": "Pack Plus أدمن",
+  "description": "لوحة إدارة منتجات موقع Pack Plus",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#211D18",
+  "theme_color": "#211D18",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

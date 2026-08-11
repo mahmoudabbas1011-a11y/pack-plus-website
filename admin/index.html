@@ -4,9 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة تحكم Pack Plus</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#211D18">
+  <link rel="icon" href="icon-192.png">
+
+  <!-- iOS support for "Add to Home Screen" -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pack Plus أدمن">
+  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
   <!-- Include the Decap CMS script -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function(err){
+        console.warn('Service worker registration failed:', err);
+      });
+    }
+  </script>
 </body>
 </html>

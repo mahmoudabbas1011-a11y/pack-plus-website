@@ -2,6 +2,8 @@
 (function () {
   var CART_KEY = 'packplus_cart_v1';
   var WHATSAPP_NUMBER = '201028735709';
+  var TELEGRAM_BOT_TOKEN = '8998984062:AAEbIJjD9rRtyzgUTobdLGibAYQhXUMK-tI';
+  var TELEGRAM_CHAT_ID = '5435839033';
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); }
@@ -93,11 +95,11 @@
     if (o) o.classList.remove('open');
   }
 
-  function buildWhatsAppMessage() {
+  function buildOrderLines() {
     var c = getCart();
     var keys = Object.keys(c);
-    if (keys.length === 0) return '';
-    var lines = ['مرحباً، عايز أطلب عرض سعر للأصناف دي:', ''];
+    if (keys.length === 0) return null;
+    var lines = [];
     var total = 0;
     keys.forEach(function (k) {
       var it = c[k];
@@ -105,11 +107,37 @@
       total += lineTotal;
       lines.push('- ' + it.name + (it.unit ? ' (' + it.unit + ')' : '') + '  ×  ' + it.qty);
     });
-    if (total > 0) {
-      lines.push('');
-      lines.push('الإجمالي التقريبي: ' + total.toFixed(2) + ' ج.م');
+    return { lines: lines, total: total };
+  }
+
+  function buildWhatsAppMessage() {
+    var order = buildOrderLines();
+    if (!order) return '';
+    var msgLines = ['مرحباً، عايز أطلب عرض سعر للأصناف دي:', ''].concat(order.lines);
+    if (order.total > 0) {
+      msgLines.push('');
+      msgLines.push('الإجمالي التقريبي: ' + order.total.toFixed(2) + ' ج.م');
     }
-    return encodeURIComponent(lines.join('\n'));
+    return encodeURIComponent(msgLines.join('\n'));
+  }
+
+  function notifyTelegram() {
+    var order = buildOrderLines();
+    if (!order) return;
+    var msgLines = ['🔔 طلب جديد من الموقع', ''].concat(order.lines);
+    if (order.total > 0) {
+      msgLines.push('');
+      msgLines.push('الإجمالي التقريبي: ' + order.total.toFixed(2) + ' ج.م');
+    }
+    var text = msgLines.join('\n');
+    var url = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage';
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text })
+    }).catch(function (err) {
+      console.warn('تعذر إرسال إشعار تليجرام:', err);
+    });
   }
 
   document.addEventListener('click', function (e) {
@@ -160,6 +188,7 @@
     if (e.target.closest('.cart-checkout')) {
       var msg = buildWhatsAppMessage();
       if (!msg) { alert('السلة فاضية — ضيف منتجات الأول'); return; }
+      notifyTelegram();
       window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
       return;
     }

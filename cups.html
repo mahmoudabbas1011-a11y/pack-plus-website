@@ -488,7 +488,7 @@
         const key = p.image;
         const unit = p.carton_qty ? ('كرتونة ' + p.carton_qty) : '';
         return `
-        <div class="gallery-item" data-key="${key}" data-name="${p.name}" data-image="${p.image}" data-price="${p.price || 0}" data-unit="${unit}">
+        <div class="gallery-item" data-key="${key}" data-name="${p.name}" data-image="${p.image}" data-price="${p.price || 0}" data-unit="${unit}" data-size="${p.size || ''}">
           <div class="photo"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
           <div class="caption">
             <h4>${p.name}</h4>

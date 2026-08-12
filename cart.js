@@ -23,7 +23,7 @@
   }
   function addToCart(item, qty) {
     var c = getCart();
-    if (!c[item.key]) c[item.key] = { key: item.key, name: item.name, image: item.image, price: item.price, unit: item.unit, qty: 0 };
+    if (!c[item.key]) c[item.key] = { key: item.key, name: item.name, image: item.image, price: item.price, unit: item.unit, size: item.size, qty: 0 };
     c[item.key].qty += qty;
     saveCart(c);
   }
@@ -65,7 +65,7 @@
           '<img src="' + it.image + '" alt="' + it.name + '">' +
           '<div class="cart-line-info">' +
             '<div class="cart-line-name">' + it.name + '</div>' +
-            (it.unit ? '<div class="cart-line-unit">' + it.unit + '</div>' : '') +
+            ((it.size || it.unit) ? '<div class="cart-line-unit">' + [it.size, it.unit].filter(Boolean).join(' — ') + '</div>' : '') +
             '<div class="cart-line-controls">' +
               '<button type="button" data-act="dec" data-key="' + k + '">−</button>' +
               '<span>' + it.qty + '</span>' +
@@ -104,7 +104,8 @@
       var it = c[k];
       var lineTotal = (it.price || 0) * it.qty;
       total += lineTotal;
-      lines.push('- ' + it.name + (it.unit ? ' (' + it.unit + ')' : '') + '  ×  ' + it.qty);
+      var detail = [it.size, it.unit].filter(Boolean).join(' — ');
+      lines.push('- ' + it.name + (detail ? ' (' + detail + ')' : '') + '  ×  ' + it.qty);
     });
     return { lines: lines, total: total };
   }
@@ -154,7 +155,8 @@
         name: wrap.dataset.name,
         image: wrap.dataset.image,
         price: parseFloat(wrap.dataset.price) || 0,
-        unit: wrap.dataset.unit || ''
+        unit: wrap.dataset.unit || '',
+        size: wrap.dataset.size || ''
       }, qty);
       var original = addBtn.textContent;
       addBtn.textContent = 'تمت الإضافة ✓';

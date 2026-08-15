@@ -3,7 +3,7 @@
   var CART_KEY = 'packplus_cart_v1';
   var WHATSAPP_NUMBER = '201028735709';
   var NTFY_TOPIC = 'packplus-orders-mh2026x9';
-  var ORDERS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxv1biHaH14G8KGjUHIWYG838FClhR9P6i1GX024l6RjU-ZClpIx_qQvmiSMjIF1UY0/exec';
+  var ORDERS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrcpKdVp3w4erUtqg9ZJ8zk2OrRU9v_2adUkqOkhjwbAcyb18y5AkDlRC4gKHgCLRs/exec';
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); }

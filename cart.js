@@ -3,6 +3,7 @@
   var CART_KEY = 'packplus_cart_v1';
   var WHATSAPP_NUMBER = '201028735709';
   var NTFY_TOPIC = 'packplus-orders-mh2026x9';
+  var ORDERS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxv1biHaH14G8KGjUHIWYG838FClhR9P6i1GX024l6RjU-ZClpIx_qQvmiSMjIF1UY0/exec';
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || '{}'); }
@@ -121,6 +122,23 @@
     return encodeURIComponent(msgLines.join('\n'));
   }
 
+  function logOrder() {
+    if (!ORDERS_APPS_SCRIPT_URL || ORDERS_APPS_SCRIPT_URL.indexOf('PASTE_') === 0) return;
+    var c = getCart();
+    var keys = Object.keys(c);
+    if (keys.length === 0) return;
+    var items = keys.map(function (k) {
+      var it = c[k];
+      return { name: it.name, qty: it.qty, price: it.price || 0 };
+    });
+    fetch(ORDERS_APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ items: items })
+    }).catch(function (err) {
+      console.warn('تعذر تسجيل الطلب في التقرير:', err);
+    });
+  }
+
   function notifyNtfy() {
     var order = buildOrderLines();
     if (!order) return;
@@ -193,6 +211,7 @@
       var msg = buildWhatsAppMessage();
       if (!msg) { alert('السلة فاضية — ضيف منتجات الأول'); return; }
       notifyNtfy();
+      logOrder();
       window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
       return;
     }

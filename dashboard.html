@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>تقرير المبيعات | Pack Plus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFECE4; --paper-2:#E4DFD3; --ink:#211D18; --ink-soft:#4B453C;
+    --kraft-dark:#7C562F; --signal:#E1531B; --line:#D4CDBD;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:'Cairo',sans-serif; line-height:1.7;}
+  h1,h2,.eyebrow{font-family:'Tajawal',sans-serif;}
+  .wrap{max-width:720px; margin:0 auto; padding:32px 20px 60px;}
+
+  .gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px;
+  }
+  .gate input{
+    padding:14px 18px; border:1.5px solid var(--line); border-radius:2px; font-size:16px;
+    width:240px; text-align:center; background:#fff;
+  }
+  .gate button{
+    padding:14px 32px; background:var(--ink); color:var(--paper); border:none; border-radius:2px;
+    font-size:15px; font-weight:700; cursor:pointer;
+  }
+  .gate p{color:var(--ink-soft); font-size:14px;}
+
+  #app{display:none;}
+
+  h1{font-size:26px; font-weight:900; margin-bottom:4px;}
+  .eyebrow{font-size:13px; font-weight:700; color:var(--kraft-dark); letter-spacing:1px; margin-bottom:8px; display:block;}
+  .sub{color:var(--ink-soft); font-size:14.5px; margin-bottom:28px;}
+
+  .month-nav{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:28px;}
+  .month-nav button{
+    width:36px; height:36px; border:1.5px solid var(--line); background:#fff; border-radius:50%;
+    font-size:16px; cursor:pointer; color:var(--ink);
+  }
+  .month-label{font-weight:800; font-size:16px; min-width:140px; text-align:center;}
+
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:32px;}
+  .stat-card{
+    background:#fff; border:1px solid var(--line); border-radius:3px; padding:20px;
+    text-align:center;
+  }
+  .stat-card .num{font-size:26px; font-weight:900; margin-bottom:4px;}
+  .stat-card .label{font-size:12.5px; color:var(--ink-soft); font-weight:700;}
+  .stat-card.profit .num{color:var(--signal);}
+  .stat-card.wide{grid-column:1/-1;}
+
+  .order-list{background:#fff; border:1px solid var(--line); border-radius:3px; overflow:hidden;}
+  .order-row{padding:14px 18px; border-top:1px solid var(--line); font-size:13.5px;}
+  .order-row:first-child{border-top:none;}
+  .order-row .top{display:flex; justify-content:space-between; font-weight:700; margin-bottom:4px;}
+  .order-row .items{color:var(--ink-soft); font-size:12.5px;}
+  .empty{padding:40px 20px; text-align:center; color:var(--ink-soft); font-size:14px;}
+  .loading{padding:40px 20px; text-align:center; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="eyebrow">تقرير خاص — Pack Plus</div>
+  <input type="password" id="gate-pass" placeholder="كلمة المرور">
+  <button onclick="tryUnlock()">دخول</button>
+  <p id="gate-error" style="color:#E1531B; display:none;">كلمة مرور غلط</p>
+</div>
+
+<div id="app">
+  <div class="wrap">
+    <span class="eyebrow">تقرير خاص</span>
+    <h1>المبيعات وصافي الربح</h1>
+    <p class="sub">البيانات دي مش ظاهرة لحد غيرك — مش موجودة في الموقع العام خالص.</p>
+
+    <div class="month-nav">
+      <button onclick="changeMonth(1)">‹</button>
+      <div class="month-label" id="month-label">—</div>
+      <button onclick="changeMonth(-1)">›</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="num" id="stat-count">0</div>
+        <div class="label">عدد الطلبات</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-revenue">0</div>
+        <div class="label">إجمالي المبيعات (ج.م)</div>
+      </div>
+      <div class="stat-card wide profit">
+        <div class="num" id="stat-profit">0</div>
+        <div class="label">صافي الربح التقريبي (ج.م)</div>
+      </div>
+    </div>
+
+    <div class="order-list" id="order-list">
+      <div class="loading">جاري تحميل الطلبات...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // غيّر كلمة المرور دي لأي حاجة تحبها
+  var GATE_PASSWORD = 'packplus2026';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxv1biHaH14G8KGjUHIWYG838FClhR9P6i1GX024l6RjU-ZClpIx_qQvmiSMjIF1UY0/exec';
+
+  function tryUnlock() {
+    var val = document.getElementById('gate-pass').value;
+    if (val === GATE_PASSWORD) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      sessionStorage.setItem('packplus_dash_ok', '1');
+      loadOrders();
+    } else {
+      document.getElementById('gate-error').style.display = 'block';
+    }
+  }
+
+  if (sessionStorage.getItem('packplus_dash_ok') === '1') {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  var allOrders = [];
+  var viewDate = new Date();
+
+  var monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+  function changeMonth(dir) {
+    viewDate.setMonth(viewDate.getMonth() + dir);
+    renderMonth();
+  }
+
+  function loadOrders() {
+    fetch(APPS_SCRIPT_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        allOrders = data.orders || [];
+        renderMonth();
+      })
+      .catch(function (err) {
+        document.getElementById('order-list').innerHTML = '<div class="empty">تعذر تحميل البيانات — تأكد من رابط السكريبت</div>';
+        console.error(err);
+      });
+  }
+
+  function renderMonth() {
+    var y = viewDate.getFullYear();
+    var m = viewDate.getMonth();
+    document.getElementById('month-label').textContent = monthNames[m] + ' ' + y;
+
+    var filtered = allOrders.filter(function (o) {
+      var d = new Date(o.date);
+      return d.getFullYear() === y && d.getMonth() === m;
+    });
+
+    var revenue = 0, profit = 0;
+    filtered.forEach(function (o) {
+      revenue += Number(o.revenue) || 0;
+      profit += Number(o.profit) || 0;
+    });
+
+    document.getElementById('stat-count').textContent = filtered.length;
+    document.getElementById('stat-revenue').textContent = revenue.toFixed(0);
+    document.getElementById('stat-profit').textContent = profit.toFixed(0);
+
+    var list = document.getElementById('order-list');
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty">مفيش طلبات مسجلة في الشهر ده</div>';
+      return;
+    }
+    list.innerHTML = filtered.slice().reverse().map(function (o) {
+      var d = new Date(o.date);
+      var dateStr = d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return (
+        '<div class="order-row">' +
+          '<div class="top"><span>' + dateStr + '</span><span>' + Number(o.revenue).toFixed(0) + ' ج.م</span></div>' +
+          '<div class="items">' + o.items + '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  if (sessionStorage.getItem('packplus_dash_ok') === '1') {
+    loadOrders();
+  }
+</script>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
-  "name": "Pack Plus - لوحة التحكم",
-  "short_name": "Pack Plus أدمن",
-  "description": "لوحة إدارة منتجات موقع Pack Plus",
+  "name": "Sphinx Pack - لوحة التحكم",
+  "short_name": "Sphinx Pack أدمن",
+  "description": "لوحة إدارة منتجات موقع Sphinx Pack",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
